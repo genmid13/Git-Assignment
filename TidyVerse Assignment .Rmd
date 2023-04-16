@@ -1,0 +1,195 @@
+## Introduction
+
+The dataset used for this analysis assignment is taken from Kaggle titled "Diabetes Dataset By Age Standardized Countries". The dataset includes information from 200 countries and territories and covers the period from 1980 to 2014. The data is presented in both male and female categories, and estimates are given for different age groups ranging from 20-79 years old. The data is standardized to account for differences in age distributions across countries and over time.
+
+This analysis however will only look into Latin American countries and how the estimated prevalence of diabeete differ across the countries by gender through using the dplyr and ggplot packages part of the tidyverse library.
+
+------------------------------------
+
+Defining columns:
+Age-standardised diabetes prevalence: Age-standardized diabetes prevalence is a statistical term used to describe the prevalence of diabetes in a population that has been adjusted for differences in age distribution across different population groups.
+
+Lower 95% uncertainty interval: The lower 95% uncertainty interval (or lower bound) is a statistical term used to describe the range of values within which a true population parameter is believed to fall with a 95% level of confidence.
+
+Upper 95% uncertainty interval: The upper 95% uncertainty interval (or upper bound) is a statistical term used to describe the range of values within which a true population parameter is believed to fall with a 95% level of confidence.
+
+```{r}
+library(tidyverse)
+
+data <- read.csv("Diabetes Dataset By Age Standardized Countries.csv")
+data
+```
+
+## Latin America Dataframe
+Filtering out countries within Latin America. 
+This code is defining a vector of ISO country codes for Latin American countries using the c() function. It then uses the dplyr package to filter and arrange a data frame data based on these ISO codes.
+
+filter(ISO %in% latin_america_ISO) filters the rows in data where the ISO code matches any of the codes in latin_america_ISO.
+arrange(ISO, Sex) sorts the resulting data frame by ISO code first, and then by sex.
+The resulting data frame is assigned to the variable la_data.
+```{r}
+latin_america_ISO <- c("BRA", "ARG", "BOL", "VEN", "CHL", "ECU", "COL", "PER", "URY", "SUR", "PRY", "GUY", "GTM", "DOM", "MEX", "HON", "CRI", "PAN", "HTI", "CUB", "NIC", "SLV", "BLZ")
+
+la_data <- data %>%
+  filter(ISO %in% latin_america_ISO) %>%
+  arrange(ISO, Sex)
+
+la_data
+```
+## Estimated Prevalence of Diabetes for Men Across Latin America in 2014
+The following code describes the estimaated prevalence of diabetes for men across the latin american countries.
+
+filter(): A function from the dplyr package that subsets the la_data dataframe based on the condition that the year is 2014 and the sex is "Men". The resulting dataframe is assigned to the object la_women.
+
+ggplot(): A function from the ggplot2 package that initializes a new plot. It takes the la_men dataframe as the data source and maps variables to aesthetic properties such as the x-axis and y-axis.
+
+aes(): A function from the ggplot2 package that specifies the aesthetic mappings for the plot. In this case, it specifies that Country.Region.World should be mapped to the x-axis and Age.standardised.diabetes.prevalence should be mapped to the y-axis.
+
+geom_col(): A function from the ggplot2 package that adds a bar layer to the plot. It uses the fill parameter to set the color of the bars to "#F23BA7".
+
+labs(): A function from the ggplot2 package that adds labels to the plot. It sets the x-axis label to "Latin American Countries", the y-axis label to "Age Standard Diabetes Prevalence", and the plot title to "Estimated Prevalence of Diabetes for Men Across Latin America in 2014".
+
+theme_minimal(): A function from the ggplot2 package that sets the plot theme to a minimal style.
+
+theme(): A function from the ggplot2 package that modifies the plot theme. It sets the angle of the x-axis text labels to 45 degrees, the vertical justification of the x-axis text labels to 1, and the horizontal justification of the x-axis text labels to 1. It also centers the plot title horizontally.
+```{r}
+la_men <- la_data %>%
+  filter(Year == 2014, Sex == "Men")
+
+ggplot(la_men, aes(Country.Region.World, Age.standardised.diabetes.prevalence)) +
+  geom_col(fill="#0EC1AE") +
+  labs(x = "Latin American Countries", y = "Age Standard Diabetes Prevalence", title ="Estimated Prevalence of Diabetes for Men Across Latin America in 2014") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
+  
+```
+The next code looks into what countries possess the minimum and maximum estimanted prevalence of diabetes among all countries in Latin America.
+min = Bolivia
+max = Suriname
+
+The code is written in R programming language and uses the built-in function subset().
+
+subset(la_men, Age.standardised.diabetes.prevalence == min(la_men$Age.standardised.diabetes.prevalence)) creates a subset of la_men where the value of Age.standardised.diabetes.prevalence is equal to the minimum value of the same column in the entire la_men data frame.
+
+subset(la_men, Age.standardised.diabetes.prevalence == max(la_men$Age.standardised.diabetes.prevalence)) creates a subset of la_men where the value of Age.standardised.diabetes.prevalence is equal to the maximum value of the same column in the entire la_men data frame.
+
+In both lines of code, la_men$Age.standardised.diabetes.prevalence refers to the specific column of the la_men data frame. The min() and max() functions are used to find the minimum and maximum values in that column.
+```{r}
+#min
+subset(la_men, Age.standardised.diabetes.prevalence == min(la_men$Age.standardised.diabetes.prevalence))
+
+#max
+subset(la_men, Age.standardised.diabetes.prevalence == max(la_men$Age.standardised.diabetes.prevalence))
+```
+
+
+## Estimated Prevalence of Diabetes for Women Across Latin America in 2014
+[REPEATING THE PROCESS FROM THE Estimated Prevalence of Diabetes for Men Across Latin America in 2014 ]
+The following code describes the estimaated prevalence of diabetes for women across the latin american countries.
+```{r}
+la_women <- la_data %>%
+  filter(Year == 2014, Sex == "Women")
+
+ggplot(la_women, aes(Country.Region.World, Age.standardised.diabetes.prevalence)) +
+  geom_col(fill="#F23BA7") +
+  labs(x = "Latin American Countries", y = "Age Standard Diabetes Prevalence", title ="Estimated Prevalence of Diabetes for Women Across Latin America in 2014") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
+```
+[REPEATING THE PROCESS FROM Step 4 ]
+The next step looks into what countries possess the minimum and maximum estimanted prevalence of diabetes among all countries in Latin America.
+min = Peru
+max = Belize
+
+```{r}
+#min
+subset(la_women, Age.standardised.diabetes.prevalence == min(la_women$Age.standardised.diabetes.prevalence))
+
+#max
+subset(la_women, Age.standardised.diabetes.prevalence == max(la_women$Age.standardised.diabetes.prevalence))
+```
+This next chunk of code creates a bar plot of age-standardized diabetes prevalence across Latin American countries, comparing the prevalence for males and females. The countries used for this comparison are the countries found to have either the lowest or highest estimated diabetes prevalence across both of the genders. The plot is created using ggplot2 and the data is subsetted using dplyr.
+
+It is shown that women consistantly have a higher estimated rates of diabetes across the specified LA countries than men. The largest gap shown is in the observation of Belize where the estimated prevalence of diabetes for women are 0.05 higher than that of men.
+Bolivia maintains one of the lowest estimations (0.06950181) of the group where it describes the men of the country at that time.
+Belize maintains one of the highest estimations (0.1518362) of the group where it describes the women of the country at that time.
+
+```{r}
+la_data %>%
+  filter(ISO %in% c("BOL", "SUR", "PER", "BLZ")) %>%
+  ggplot(aes(Country.Region.World, Age.standardised.diabetes.prevalence, fill=Sex)) +
+  geom_col(position = "dodge") + 
+  scale_fill_manual(values = c("#0EC1AE", "#F23BA7")) +
+  labs(x = "Latin American Countries", y = "Age Standard Diabetes Prevalence", title ="Comparing the Estimated Prevalence of Diabetes Across Latin America by Gender (2014)") +
+  theme_minimal() 
+```
+These next few chunks creates a line plot of the estimated prevalence of diabetes in Suriname, Bolivia, Peru, Belize from 1980 to 2014, stratified by gender.
+Again, we are seeing across all the line graphs the consistency of women leading the estimated prevalence of diabetes.
+
+For this first graph describing Suriname, the rate of change in which the estimation changes over time of both men and women move very parrallel against eachother, where women still have a higher estimation but its increases and consolidation mimick to that of men. 
+
+The function used are the same functions used in the first half of the analysis with the exception of geom_line(), a command part of the ggplot funtion that adds line(s) onto the plot.
+
+```{r}
+la_data %>%
+  filter(ISO == "SUR")
+
+la_data %>%
+  filter(ISO == "SUR") %>%
+  ggplot(aes(Year, Age.standardised.diabetes.prevalence, color = Sex)) +
+  geom_line() + 
+  scale_color_manual(values = c("#0EC1AE", "#F23BA7")) +
+  labs(x = "Year", y = "Age Standard Diabetes Prevalence", title ="The Estimated Prevalence of Diabetes in Suriname by Gender from 1980-2014")
+  
+```
+This next graph describing Bolivia shows the expansion of the gap of the estimation between both women an men from 1980 to 2014, where the estimation for women are increasing at a faster rate.
+```{r}
+la_data %>%
+  filter(ISO == "BOL")
+
+la_data %>%
+  filter(ISO == "BOL") %>%
+  ggplot(aes(Year, Age.standardised.diabetes.prevalence, color = Sex)) +
+  geom_line() + 
+  scale_color_manual(values = c("#0EC1AE", "#F23BA7")) +
+  labs(x = "Year", y = "Age Standard Diabetes Prevalence", title ="The Estimated Prevalence of Diabetes in Bolivia by Gender from 1980-2014")
+  
+```
+
+The third graph shown below describes the country Peru where it also shows a parrallell rate of chane between both women and men
+```{r}
+la_data %>%
+  filter(ISO == "PER")
+
+la_data %>%
+  filter(ISO == "PER") %>%
+  ggplot(aes(Year, Age.standardised.diabetes.prevalence, color = Sex)) +
+  geom_line() + 
+  scale_color_manual(values = c("#0EC1AE", "#F23BA7")) +
+  labs(x = "Year", y = "Age Standard Diabetes Prevalence", title ="The Estimated Prevalence of Diabetes in Peru by Gender from 1980-2014")
+  
+```
+
+Lastly, we look into Belize and see that the estiamtion of the prevalence of diabetes also shows an expansion on the rate of change betweem the sexes. Again, the estimation for women are increasing at a faster rate.
+
+```{r}
+la_data %>%
+  filter(ISO == "BLZ")
+
+la_data %>%
+  filter(ISO == "BLZ") %>%
+  ggplot(aes(Year, Age.standardised.diabetes.prevalence, color = Sex)) +
+  geom_line() + 
+  scale_color_manual(values = c("#0EC1AE", "#F23BA7")) +
+  labs(x = "Year", y = "Age Standard Diabetes Prevalence", title ="The Estimated Prevalence of Diabetes in Belize by Gender from 1980-2014")
+  
+```
+
+## Conclusion // Key Findings
+This analysis has focused on exploring the estimated prevalence of diabetes in Latin American countries by gender using data from the "Diabetes Dataset By Age Standardized Countries" fiund on Kaggle. In focusing on men back in 2014, it was found that the country to have the lowest estimation regarding their prevalence of diabetes was Bolivia while the country with the highest estimation for men was Suriname. In regards to women in latin america, it was found that the country with the lowest estimation was Peru, while the country with the highest estimation was Belize.
+
+When looking at the trend of how the estimation differed between 1980-2014, we are shown that women in Latin America consistantly had higher estimaitons for diabetes where Bolivia and Belize both revealed an expansion in gap between the sexes as time passes (women estimation increasing at a faster pace), whike Suriname & Peru both are shown to have parrallelconsistency in the rate of estimation change regarding the men and women within their countries.
+
+This project can be extended further by looking into other groups of countries/continents to see how the estimation of diabetes change according to sext. Its trend over time can then be compared to this analysis.
